@@ -8,7 +8,7 @@ workflow:
     - if: $CI_COMMIT_REF_PROTECTED == 'true'
 
 variables:
-  GITLAB_DOCKER_PROXY: "gitlab.education.tbank.ru:443/t-academy-2026/dependency_proxy/containers"
+  GITLAB_DOCKER_PROXY: "gitlab.education.tbank.ru:443/t-academy-2026/java-advanced/materials/dependency_proxy/containers"
   GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 

@@ -26,7 +26,7 @@ class LetterMatchingTest {
 
     @Test
     @Disabled("MR2: реализуй тест и удали эту строку")
-    @DisplayName("Повторяющиеся буквы: загадано \"сорок\", ввод \"оооом\" -> 🟡❌❌✅❌")
+    @DisplayName("Повторяющиеся буквы: загадано \"сорок\", ввод \"оооом\" -> ❌✅❌✅❌")
     void repeatedLettersAreNotDoubleCounted() {
         fail("Тест не реализован");
     }
