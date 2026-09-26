@@ -1,11 +1,7 @@
 pluginManagement {
     repositories {
         maven("https://mvn-mirror.gitverse.ru")
-        gradlePluginPortal {
-            content {
-                includeModule("net.ltgt.gradle", "gradle-errorprone-plugin")
-            }
-        }
+        maven("https://maven.aliyun.com/repository/gradle-plugin")
     }
     resolutionStrategy {
         eachPlugin {
