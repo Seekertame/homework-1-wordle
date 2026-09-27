@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class Dictionary {
+    public static final int WORD_LENGTH = 5;
+
     private final List<String> words;
 
     public Dictionary(List<String> candidates) {
@@ -19,7 +21,7 @@ public class Dictionary {
         for (var candidate : candidates) {
             var word = candidate.strip().toLowerCase(Locale.ROOT);
 
-            if (!word.matches("[а-я]{5}")) {
+            if (word.length() != WORD_LENGTH || !word.matches("[а-я]+")) {
                 throw new IllegalArgumentException("Слово не из 5 русских букв: '" + candidate + "'");
             }
 

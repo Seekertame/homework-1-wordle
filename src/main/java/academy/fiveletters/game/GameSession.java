@@ -8,7 +8,7 @@ public class GameSession {
     private final Dictionary dictionary;
     private final String answer;
     private final int maxAttempts;
-    private final List<String> history = new ArrayList<>();
+    private final List<Attempt> history = new ArrayList<>();
     private GameStatus status;
 
     public GameSession(Dictionary dictionary, String answer, int maxAttempts) {
@@ -26,15 +26,15 @@ public class GameSession {
         this.status = GameStatus.IN_PROGRESS;
     }
 
-    void recordAttempt(String guess) {
+    void recordAttempt(Attempt attempt) {
         if (status != GameStatus.IN_PROGRESS) {
             throw new IllegalStateException(
                     "Партия уже завершена со статусом " + status + ", новые попытки не принимаются");
         }
 
-        history.add(guess);
+        history.add(attempt);
 
-        if (guess.equals(answer)) {
+        if (attempt.guess().equals(answer)) {
             status = GameStatus.WIN;
         } else if (attemptsUsed() == maxAttempts) {
             status = GameStatus.LOSE;
@@ -57,7 +57,7 @@ public class GameSession {
         return history.size();
     }
 
-    public List<String> history() {
+    public List<Attempt> history() {
         return List.copyOf(history);
     }
 
