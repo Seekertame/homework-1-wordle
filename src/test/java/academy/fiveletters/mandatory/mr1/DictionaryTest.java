@@ -1,8 +1,10 @@
 package academy.fiveletters.mandatory.mr1;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.Disabled;
+import academy.fiveletters.game.Dictionary;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,23 +13,26 @@ import org.junit.jupiter.api.Test;
 class DictionaryTest {
 
     @Test
-    @Disabled("MR1: реализуй тест и удали эту строку")
     @DisplayName("Словарь содержит не меньше 50 слов")
     void dictionaryContainsAtLeastFiftyWords() {
-        fail("Тест не реализован");
+        var dictionary = Dictionary.load();
+
+        assertThat(dictionary.size()).isGreaterThanOrEqualTo(50);
     }
 
     @Test
-    @Disabled("MR1: реализуй тест и удали эту строку")
     @DisplayName("Все слова словаря состоят ровно из 5 букв")
     void allWordsAreExactlyFiveLettersLong() {
-        fail("Тест не реализован");
+        var dictionary = Dictionary.load();
+
+        assertThat(dictionary.words()).allSatisfy(word -> assertThat(word).matches("[а-я]{5}"));
     }
 
     @Test
-    @Disabled("MR1: реализуй тест и удали эту строку")
     @DisplayName("Пустой словарь приводит к ошибке, а не к запуску игры без слова")
     void emptyDictionaryIsRejected() {
-        fail("Тест не реализован");
+        assertThatThrownBy(() -> new Dictionary(List.of()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("пуст");
     }
 }
