@@ -1,8 +1,12 @@
 package academy.fiveletters.mandatory.mr2;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.jupiter.api.Disabled;
+import academy.fiveletters.game.Dictionary;
+import academy.fiveletters.game.Game;
+import academy.fiveletters.game.GameSession;
+import academy.fiveletters.game.GameStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,31 +14,46 @@ import org.junit.jupiter.api.Test;
 @DisplayName("MR2. Победа и поражение")
 class GameOutcomeTest {
 
+    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Угаданное слово переводит сессию в статус WIN")
     void correctGuessWinsTheGame() {
-        fail("Тест не реализован");
+        Game.applyGuess(session, "озеро");
+
+        assertThat(session.status()).isEqualTo(GameStatus.WIN);
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("После 6 неудачных попыток сессия переходит в статус LOSE")
     void sixFailedAttemptsLoseTheGame() {
-        fail("Тест не реализован");
+        for (int i = 0; i < 5; i++) {
+            Game.applyGuess(session, "арбуз");
+        }
+        assertThat(session.status()).isEqualTo(GameStatus.IN_PROGRESS);
+
+        Game.applyGuess(session, "арбуз");
+
+        assertThat(session.status()).isEqualTo(GameStatus.LOSE);
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("При поражении показывается загаданное слово")
     void answerIsRevealedOnLoss() {
-        fail("Тест не реализован");
+        for (int i = 0; i < 6; i++) {
+            Game.applyGuess(session, "арбуз");
+        }
+
+        assertThat(session.status()).isEqualTo(GameStatus.LOSE);
+        assertThat(session.answer()).isEqualTo("озеро");
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Завершённая партия больше не принимает попытки")
     void finishedGameRejectsFurtherGuesses() {
-        fail("Тест не реализован");
+        Game.applyGuess(session, "озеро");
+
+        assertThatThrownBy(() -> Game.applyGuess(session, "арбуз")).isInstanceOf(IllegalStateException.class);
+        assertThat(session.attemptsUsed()).isEqualTo(1);
     }
 }

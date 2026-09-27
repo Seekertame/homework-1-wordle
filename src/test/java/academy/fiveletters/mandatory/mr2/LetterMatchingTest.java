@@ -1,8 +1,11 @@
 package academy.fiveletters.mandatory.mr2;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Disabled;
+import academy.fiveletters.game.LetterMatcher;
+import academy.fiveletters.game.LetterStatus;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,30 +14,30 @@ import org.junit.jupiter.api.Test;
 class LetterMatchingTest {
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Базовый случай: загадано \"озеро\", ввод \"арбуз\" -> ❌🟡❌❌🟡")
     void basicCase() {
-        fail("Тест не реализован");
+        assertThat(symbols(LetterMatcher.match("озеро", "арбуз"))).isEqualTo("❌🟡❌❌🟡");
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Полное совпадение: загадано \"озеро\", ввод \"озеро\" -> ✅✅✅✅✅")
     void exactMatch() {
-        fail("Тест не реализован");
+        assertThat(symbols(LetterMatcher.match("озеро", "озеро"))).isEqualTo("✅✅✅✅✅");
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Повторяющиеся буквы: загадано \"сорок\", ввод \"оооом\" -> ❌✅❌✅❌")
     void repeatedLettersAreNotDoubleCounted() {
-        fail("Тест не реализован");
+        assertThat(symbols(LetterMatcher.match("сорок", "оооом"))).isEqualTo("❌✅❌✅❌");
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Ни одна буква не подошла: все позиции ❌")
     void noMatchingLetters() {
-        fail("Тест не реализован");
+        assertThat(LetterMatcher.match("озеро", "мышка")).containsOnly(LetterStatus.ABSENT);
+    }
+
+    private static String symbols(List<LetterStatus> statuses) {
+        return statuses.stream().map(LetterStatus::symbol).collect(Collectors.joining());
     }
 }

@@ -1,8 +1,12 @@
 package academy.fiveletters.mandatory.mr2;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Disabled;
+import academy.fiveletters.game.Dictionary;
+import academy.fiveletters.game.Game;
+import academy.fiveletters.game.GameSession;
+import academy.fiveletters.game.GuessError;
+import academy.fiveletters.game.GuessResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,40 +16,53 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("MR2. Валидация ввода")
 class GuessValidationTest {
 
+    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+
     @ParameterizedTest
     @ValueSource(strings = {"дом", "домики", ""})
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Слово не из 5 букв отклоняется: \"{0}\"")
     void wordOfWrongLengthIsRejected(String guess) {
-        fail("Тест не реализован");
+        var result = Game.applyGuess(session, guess);
+
+        assertThat(result).isEqualTo(new GuessResult.Rejected(GuessError.WRONG_LENGTH));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"дом12", "дом!!", "до ма"})
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Ввод с не-буквами отклоняется: \"{0}\"")
     void nonLetterInputIsRejected(String guess) {
-        fail("Тест не реализован");
+        var result = Game.applyGuess(session, guess);
+
+        assertThat(result).isEqualTo(new GuessResult.Rejected(GuessError.NOT_LETTERS));
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Слово, которого нет в словаре, отклоняется")
     void wordOutsideDictionaryIsRejected() {
-        fail("Тест не реализован");
+        var result = Game.applyGuess(session, "абвгд");
+
+        assertThat(result).isEqualTo(new GuessResult.Rejected(GuessError.NOT_IN_DICTIONARY));
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Некорректный ввод не тратит попытку")
     void invalidInputDoesNotConsumeAttempt() {
-        fail("Тест не реализован");
+        Game.applyGuess(session, "дом");
+        Game.applyGuess(session, "дом12");
+        Game.applyGuess(session, "абвгд");
+
+        assertThat(session.attemptsUsed()).isZero();
+        assertThat(session.history()).isEmpty();
     }
 
     @Test
-    @Disabled("MR2: реализуй тест и удали эту строку")
     @DisplayName("Ввод не зависит от регистра: \"ОЗЕРО\" и \"озеро\" обрабатываются одинаково")
     void inputIsCaseInsensitive() {
-        fail("Тест не реализован");
+        var other = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+
+        var upper = Game.applyGuess(session, "ОЗЕРО");
+        var lower = Game.applyGuess(other, "озеро");
+
+        assertThat(upper).isEqualTo(lower);
     }
 }

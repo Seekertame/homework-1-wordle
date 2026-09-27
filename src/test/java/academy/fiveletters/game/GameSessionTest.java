@@ -26,9 +26,9 @@ class GameSessionTest {
         assertThat(session.maxAttempts()).isEqualTo(6);
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{0}")
     @ValueSource(ints = {0, -1})
-    @DisplayName("maxAttempts должно быть больше нуля: {0}")
+    @DisplayName("maxAttempts должно быть больше нуля")
     void nonPositiveMaxAttemptsIsRejected(int maxAttempts) {
         assertThatThrownBy(() -> new GameSession(dictionary, "озеро", maxAttempts))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -48,11 +48,11 @@ class GameSessionTest {
     void wrongGuessKeepsGameInProgress() {
         var session = new GameSession(dictionary, "озеро", 6);
 
-        session.recordAttempt("арбуз");
+        session.recordAttempt(attempt("арбуз"));
 
         assertThat(session.status()).isEqualTo(GameStatus.IN_PROGRESS);
         assertThat(session.attemptsUsed()).isEqualTo(1);
-        assertThat(session.history()).containsExactly("арбуз");
+        assertThat(session.history()).extracting(Attempt::guess).containsExactly("арбуз");
     }
 
     @Test
@@ -60,7 +60,7 @@ class GameSessionTest {
     void correctGuessWins() {
         var session = new GameSession(dictionary, "озеро", 6);
 
-        session.recordAttempt("озеро");
+        session.recordAttempt(attempt("озеро"));
 
         assertThat(session.status()).isEqualTo(GameStatus.WIN);
     }
@@ -70,8 +70,8 @@ class GameSessionTest {
     void runningOutOfAttemptsLoses() {
         var session = new GameSession(dictionary, "озеро", 2);
 
-        session.recordAttempt("арбуз");
-        session.recordAttempt("сорок");
+        session.recordAttempt(attempt("арбуз"));
+        session.recordAttempt(attempt("сорок"));
 
         assertThat(session.status()).isEqualTo(GameStatus.LOSE);
     }
@@ -81,8 +81,8 @@ class GameSessionTest {
     void correctGuessOnLastAttemptWins() {
         var session = new GameSession(dictionary, "озеро", 2);
 
-        session.recordAttempt("арбуз");
-        session.recordAttempt("озеро");
+        session.recordAttempt(attempt("арбуз"));
+        session.recordAttempt(attempt("озеро"));
 
         assertThat(session.status()).isEqualTo(GameStatus.WIN);
     }
@@ -91,9 +91,9 @@ class GameSessionTest {
     @DisplayName("Выигранная партия не принимает новые попытки")
     void wonSessionRejectsAttempts() {
         var session = new GameSession(dictionary, "озеро", 6);
-        session.recordAttempt("озеро");
+        session.recordAttempt(attempt("озеро"));
 
-        assertThatThrownBy(() -> session.recordAttempt("арбуз")).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> session.recordAttempt(attempt("арбуз"))).isInstanceOf(IllegalStateException.class);
         assertThat(session.attemptsUsed()).isEqualTo(1);
     }
 
@@ -101,9 +101,9 @@ class GameSessionTest {
     @DisplayName("Проигранная партия не принимает новые попытки")
     void lostSessionRejectsAttempts() {
         var session = new GameSession(dictionary, "озеро", 1);
-        session.recordAttempt("арбуз");
+        session.recordAttempt(attempt("арбуз"));
 
-        assertThatThrownBy(() -> session.recordAttempt("озеро")).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> session.recordAttempt(attempt("озеро"))).isInstanceOf(IllegalStateException.class);
         assertThat(session.status()).isEqualTo(GameStatus.LOSE);
     }
 
@@ -112,7 +112,12 @@ class GameSessionTest {
     void historyCannotBeModifiedFromOutside() {
         var session = new GameSession(dictionary, "озеро", 6);
 
-        assertThatThrownBy(() -> session.history().add("арбуз")).isInstanceOf(UnsupportedOperationException.class);
+        assertThatThrownBy(() -> session.history().add(attempt("арбуз")))
+                .isInstanceOf(UnsupportedOperationException.class);
         assertThat(session.attemptsUsed()).isZero();
+    }
+
+    private static Attempt attempt(String guess) {
+        return new Attempt(guess, LetterMatcher.match("озеро", guess));
     }
 }

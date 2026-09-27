@@ -36,9 +36,9 @@ class DictionaryValidationTest {
         assertThat(dictionary.words()).containsExactly("сорок", "арбуз", "озеро");
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{0}")
     @ValueSource(strings = {"озер", "озерко", "ozero", "оз3ро", "оз-ро", "ёжики"})
-    @DisplayName("Неверное слово вызывает ошибку: \"{0}\"")
+    @DisplayName("Неверное слово вызывает ошибку")
     void invalidWordIsRejected(String word) {
         assertThatThrownBy(() -> new Dictionary(List.of("озеро", word)))
                 .isInstanceOf(IllegalArgumentException.class)
