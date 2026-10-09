@@ -1,6 +1,7 @@
 package academy.fiveletters.game;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +24,24 @@ class GameSeriesTest {
     @DisplayName("В серии встречаются разные слова")
     void gamesInSeriesDiffer() {
         assertThat(new HashSet<>(answers(new GameSeries(dictionary, 42), 10))).hasSizeGreaterThan(1);
+    }
+
+    @Test
+    @DisplayName("По seed последней партии её можно начать заново")
+    void lastSeedRepeatsGame() {
+        var series = new GameSeries(dictionary, 42);
+        series.next();
+        var second = series.next();
+
+        var repeated = Game.startGame(dictionary, 6, series.lastSeed());
+
+        assertThat(repeated.answer()).isEqualTo(second.answer());
+    }
+
+    @Test
+    @DisplayName("До первой партии seed партии нет")
+    void noLastSeedBeforeFirstGame() {
+        assertThatThrownBy(() -> new GameSeries(dictionary, 42).lastSeed()).isInstanceOf(IllegalStateException.class);
     }
 
     private static List<String> answers(GameSeries series, int count) {

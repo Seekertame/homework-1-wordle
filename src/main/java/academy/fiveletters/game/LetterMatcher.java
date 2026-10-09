@@ -6,10 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Подсчёт статусов букв для попытки. */
 public final class LetterMatcher {
 
     private LetterMatcher() {}
 
+    /**
+     * Сравнивает ввод с ответом и возвращает статус каждой буквы.
+     *
+     * <p>Каждая буква ответа учитывается один раз. Сначала отмечаются все {@link LetterStatus#CORRECT}. Оставшиеся
+     * буквы ответа считаются свободными, и только ими закрываются {@link LetterStatus#PRESENT}. Например, ответ
+     * {@code сорок} и ввод {@code оооом} дают ❌✅❌✅❌.
+     *
+     * @throws IllegalArgumentException если слова разной длины
+     */
     public static List<LetterStatus> match(String answer, String guess) {
         if (answer.length() != guess.length()) {
             throw new IllegalArgumentException("Слова разной длины: '" + answer + "' и '" + guess + "'");

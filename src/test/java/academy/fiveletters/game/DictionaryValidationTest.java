@@ -69,4 +69,41 @@ class DictionaryValidationTest {
 
         assertThatThrownBy(() -> dictionary.words().add("арбуз")).isInstanceOf(UnsupportedOperationException.class);
     }
+
+    @Test
+    @DisplayName("filter отбирает слова и сохраняет порядок")
+    void filterKeepsOrder() {
+        var dictionary = new Dictionary(List.of("сорок", "арбуз", "озеро"));
+
+        var filtered = dictionary.filter(word -> word.startsWith("о") || word.startsWith("с"));
+
+        assertThat(filtered.words()).containsExactly("сорок", "озеро");
+    }
+
+    @Test
+    @DisplayName("filter без подходящих слов вызывает ошибку")
+    void emptyFilterIsRejected() {
+        var dictionary = new Dictionary(List.of("озеро"));
+
+        assertThatThrownBy(() -> dictionary.filter(word -> false)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("containsAll проверяет, что все слова другого словаря есть в этом")
+    void containsAllChecksSubset() {
+        var dictionary = new Dictionary(List.of("озеро", "арбуз", "сорок"));
+
+        assertThat(dictionary.containsAll(new Dictionary(List.of("арбуз", "озеро"))))
+                .isTrue();
+        assertThat(dictionary.containsAll(new Dictionary(List.of("арбуз", "мышка"))))
+                .isFalse();
+    }
+
+    @Test
+    @DisplayName("Несуществующий файл словаря вызывает ошибку")
+    void missingResourceIsRejected() {
+        assertThatThrownBy(() -> Dictionary.load("/categories/cars.txt"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("cars.txt");
+    }
 }

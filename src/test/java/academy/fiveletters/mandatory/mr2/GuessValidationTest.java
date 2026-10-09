@@ -2,6 +2,7 @@ package academy.fiveletters.mandatory.mr2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import academy.fiveletters.Constants;
 import academy.fiveletters.game.Dictionary;
 import academy.fiveletters.game.Game;
 import academy.fiveletters.game.GameSession;
@@ -16,7 +17,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 @DisplayName("MR2. Валидация ввода")
 class GuessValidationTest {
 
-    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Constants.DEFAULT_MAX_ATTEMPTS);
 
     @ParameterizedTest
     @ValueSource(strings = {"дом", "домики", ""})
@@ -58,7 +59,7 @@ class GuessValidationTest {
     @Test
     @DisplayName("Ввод не зависит от регистра: \"ОЗЕРО\" и \"озеро\" обрабатываются одинаково")
     void inputIsCaseInsensitive() {
-        var other = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+        var other = new GameSession(Dictionary.load(), "озеро", Constants.DEFAULT_MAX_ATTEMPTS);
 
         var upper = Game.applyGuess(session, "ОЗЕРО");
         var lower = Game.applyGuess(other, "озеро");
