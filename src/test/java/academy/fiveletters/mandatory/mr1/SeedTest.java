@@ -3,6 +3,7 @@ package academy.fiveletters.mandatory.mr1;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import academy.fiveletters.Constants;
 import academy.fiveletters.game.Dictionary;
 import academy.fiveletters.game.Game;
 import java.util.stream.LongStream;
@@ -18,8 +19,8 @@ class SeedTest {
     @Test
     @DisplayName("Одинаковый seed даёт одинаковое загаданное слово")
     void sameSeedProducesSameAnswer() {
-        var first = Game.startGame(dictionary, Game.DEFAULT_MAX_ATTEMPTS, 42);
-        var second = Game.startGame(dictionary, Game.DEFAULT_MAX_ATTEMPTS, 42);
+        var first = Game.startGame(dictionary, Constants.DEFAULT_MAX_ATTEMPTS, 42);
+        var second = Game.startGame(dictionary, Constants.DEFAULT_MAX_ATTEMPTS, 42);
 
         assertThat(second.answer()).isEqualTo(first.answer());
     }
@@ -28,7 +29,7 @@ class SeedTest {
     @DisplayName("Разные seed'ы дают разные слова хотя бы иногда")
     void differentSeedsProduceDifferentAnswers() {
         var answers = LongStream.range(0, 20)
-                .mapToObj(seed -> Game.startGame(dictionary, Game.DEFAULT_MAX_ATTEMPTS, seed)
+                .mapToObj(seed -> Game.startGame(dictionary, Constants.DEFAULT_MAX_ATTEMPTS, seed)
                         .answer())
                 .collect(toSet());
 

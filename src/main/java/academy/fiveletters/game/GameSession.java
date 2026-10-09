@@ -3,6 +3,11 @@ package academy.fiveletters.game;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Одна партия: загаданное слово, лимит попыток, история попыток и статус.
+ *
+ * <p>Попытки записываются только через {@link Game#applyGuess}, после проверки ввода.
+ */
 public class GameSession {
 
     private final Dictionary dictionary;
@@ -10,7 +15,13 @@ public class GameSession {
     private final int maxAttempts;
     private final List<Attempt> history = new ArrayList<>();
     private GameStatus status;
+    private boolean hintUsed;
 
+    /**
+     * Создаёт новую партию в статусе {@link GameStatus#IN_PROGRESS}.
+     *
+     * @throws IllegalArgumentException если попыток не больше нуля или загаданного слова нет в словаре
+     */
     public GameSession(Dictionary dictionary, String answer, int maxAttempts) {
         if (maxAttempts <= 0) {
             throw new IllegalArgumentException("Количество попыток должно быть больше нуля, передано: " + maxAttempts);
@@ -26,6 +37,11 @@ public class GameSession {
         this.status = GameStatus.IN_PROGRESS;
     }
 
+    /**
+     * Записывает проверенную попытку и пересчитывает статус. Если слово угадано на последней попытке, это победа.
+     *
+     * @throws IllegalStateException если партия уже завершена
+     */
     void recordAttempt(Attempt attempt) {
         if (status != GameStatus.IN_PROGRESS) {
             throw new IllegalStateException(
@@ -39,6 +55,10 @@ public class GameSession {
         } else if (attemptsUsed() == maxAttempts) {
             status = GameStatus.LOSE;
         }
+    }
+
+    void useHint() {
+        hintUsed = true;
     }
 
     public Dictionary dictionary() {
@@ -57,11 +77,16 @@ public class GameSession {
         return history.size();
     }
 
+    /** Неизменяемая копия истории попыток. */
     public List<Attempt> history() {
         return List.copyOf(history);
     }
 
     public GameStatus status() {
         return status;
+    }
+
+    public boolean hintUsed() {
+        return hintUsed;
     }
 }

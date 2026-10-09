@@ -3,6 +3,7 @@ package academy.fiveletters.mandatory.mr2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import academy.fiveletters.Constants;
 import academy.fiveletters.game.Dictionary;
 import academy.fiveletters.game.Game;
 import academy.fiveletters.game.GameSession;
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("MR2. Победа и поражение")
 class GameOutcomeTest {
 
-    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Game.DEFAULT_MAX_ATTEMPTS);
+    private final GameSession session = new GameSession(Dictionary.load(), "озеро", Constants.DEFAULT_MAX_ATTEMPTS);
 
     @Test
     @DisplayName("Угаданное слово переводит сессию в статус WIN")
